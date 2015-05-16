@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 ## Introduction
 
 It is now possible to collect a large amount of data about personal movement using activity monitoring devices such as a [Fitbit](http://www.fitbit.com), [Nike Fuelband](http://http://www.nike.com/us/en_us/c/nikeplus-fuel), or [Jawbone Up](https://jawbone.com/up). These type of devices are part of the "quantified self" movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. But these data remain under-utilized both because the raw data are hard to obtain and there is a lack of statistical methods and software for processing and interpreting the data.
@@ -42,9 +37,34 @@ NOTE: The GitHub repository also contains the dataset for the assignment so you 
 Show any code that is needed to
 
 1. Load the data (i.e. ```read.csv()```)
-    ```{r load data, echo = TRUE}
+    
+    ```r
     require(dplyr)  ## used for data manipulation further down
+    ```
+    
+    ```
+    ## Loading required package: dplyr
+    ## 
+    ## Attaching package: 'dplyr'
+    ## 
+    ## The following object is masked from 'package:stats':
+    ## 
+    ##     filter
+    ## 
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+    ```
+    
+    ```r
     require(lattice)
+    ```
+    
+    ```
+    ## Loading required package: lattice
+    ```
+    
+    ```r
     options(scipen = 999) ## remove scientific notation
     
     # First set working directory
@@ -54,7 +74,8 @@ Show any code that is needed to
     ```
 
 2. Process/transform the data (if necessary) into a format suitable for your analysis
-    ```{r transform data, echo = TRUE}
+    
+    ```r
     # Cast date as POSIXct, not just character data
     activity$date <- as.POSIXct(activity$date, format = "%Y-%m-%d")
     
@@ -73,13 +94,33 @@ Show any code that is needed to
     # Inspect data frame to ensure proper casting and calculations
     summary(activity)
     ```
+    
+    ```
+    ##       date                     weekday       weekpart         steps       
+    ##  Min.   :2012-10-01 00:00:00   Mon:2592   Weekday:12960   Min.   :  0.00  
+    ##  1st Qu.:2012-10-16 00:00:00   Tue:2592   Weekend: 4608   1st Qu.:  0.00  
+    ##  Median :2012-10-31 00:00:00   Wed:2592                   Median :  0.00  
+    ##  Mean   :2012-10-31 00:25:34   Thu:2592                   Mean   : 37.38  
+    ##  3rd Qu.:2012-11-15 00:00:00   Fri:2592                   3rd Qu.: 12.00  
+    ##  Max.   :2012-11-30 00:00:00   Sat:2304                   Max.   :806.00  
+    ##                                Sun:2304                   NA's   :2304    
+    ##     interval     
+    ##  Min.   :   0.0  
+    ##  1st Qu.: 588.8  
+    ##  Median :1177.5  
+    ##  Mean   :1177.5  
+    ##  3rd Qu.:1766.2  
+    ##  Max.   :2355.0  
+    ## 
+    ```
 
 ## What is mean total number of steps taken per day?
 
 For this part of the assignment, you can ignore the missing values in the dataset.
 
 1. Calculate the total number of steps taken per day
-    ```{r steps, echo = TRUE}
+    
+    ```r
     average.steps.per.day <- aggregate(activity$steps ~ activity$date, FUN = sum, na.rm = TRUE)
     names(average.steps.per.day) <- c("date", "steps")
     
@@ -87,34 +128,58 @@ For this part of the assignment, you can ignore the missing values in the datase
     summary(average.steps.per.day)
     ```
     
+    ```
+    ##       date                         steps      
+    ##  Min.   :2012-10-02 00:00:00   Min.   :   41  
+    ##  1st Qu.:2012-10-16 00:00:00   1st Qu.: 8841  
+    ##  Median :2012-10-29 00:00:00   Median :10765  
+    ##  Mean   :2012-10-30 17:37:21   Mean   :10766  
+    ##  3rd Qu.:2012-11-16 00:00:00   3rd Qu.:13294  
+    ##  Max.   :2012-11-29 00:00:00   Max.   :21194
+    ```
+    
     __Summarized in 3 below.__
 
 2. If you do not understand the difference between a histogram and a barplot, research the difference between them. Make a histogram of the total number of steps taken each day
-    ```{r steps histogram, echo = TRUE}
+    
+    ```r
     hist(average.steps.per.day$steps, 
          breaks = seq(from = 0, to = 25000, by = 1000), 
          col = "lightblue", 
          xlab = "Number of Steps", 
          main = "Histogram of Total Steps Per Day")
     ```
+    
+    ![](PA1_template_files/figure-html/steps histogram-1.png) 
 
 3. Calculate and report the mean and median of the total number of steps taken per day
-    ```{r mean & median, echo = TRUE}
+    
+    ```r
     average.steps.per.day.mean <- round(mean(average.steps.per.day$steps), 0)
     average.steps.per.day.median <- round(median(average.steps.per.day$steps), 0)
     
     average.steps.per.day.mean
     ```
-    __So, the mean steps taken per day is `r average.steps.per.day.mean`.__
-    ```{r, echo = TRUE}
+    
+    ```
+    ## [1] 10766
+    ```
+    __So, the mean steps taken per day is 10766.__
+    
+    ```r
     average.steps.per.day.median
     ```
-    __So, the median steps taken per day is `r average.steps.per.day.median`.__
+    
+    ```
+    ## [1] 10765
+    ```
+    __So, the median steps taken per day is 10765.__
 
 ## What is the average daily activity pattern?
 
 1. Make a time series plot (i.e. ```type = "l"```) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
-    ```{r time series plot, echo = TRUE}
+    
+    ```r
     average.steps.per.interval <- aggregate(activity$steps ~ activity$interval, FUN = mean, na.rm = TRUE)
     names(average.steps.per.interval) <- c("interval", "steps")
     
@@ -125,42 +190,98 @@ For this part of the assignment, you can ignore the missing values in the datase
          col = "blue")
     axis(side = 1, at = seq(0, 2500, by = 250))
     ```
+    
+    ![](PA1_template_files/figure-html/time series plot-1.png) 
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
-    ```{r max step interval, echo = TRUE}
+    
+    ```r
     max.average.interval <- average.steps.per.interval[(average.steps.per.interval$steps == 
                                                             max(average.steps.per.interval$steps)), 1]
     
     max.average.interval
     ```
-    __The 5-minute interval that, on average across all days in the dataset, has the maximum number of steps is `r max.average.interval`.  Looking at the plot above you can check the face-validity of this answer as well.__
+    
+    ```
+    ## [1] 835
+    ```
+    __The 5-minute interval that, on average across all days in the dataset, has the maximum number of steps is 835.  Looking at the plot above you can check the face-validity of this answer as well.__
 
 ## Imputing missing values
 
 Note that there are a number of days/intervals where there are missing values (coded as ```NA```). The presence of missing days may introduce bias into some calculations or summaries of the data.
 
 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with ```NA```s)
-    ```{r, echo = TRUE}
+    
+    ```r
     missing.count <- sum(is.na(activity$steps))
     
     missing.count
     ```
-    __So, the total number of missing values in the dataset is `r missing.count`.__
+    
+    ```
+    ## [1] 2304
+    ```
+    __So, the total number of missing values in the dataset is 2304.__
     
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
-    ```{r, echo = TRUE}
+    
+    ```r
     # First, capture the indexes of the missing values
     
     missing.indexes <- which(is.na(activity$steps))
     ```
     __Now let's take a look at the meta-data where we're missing metrics.__
-    ```{r, echo = TRUE}
+    
+    ```r
     # Now let's inspect a few summary statistics about the missing data.
     
     summary(activity[(missing.indexes),])
+    ```
+    
+    ```
+    ##       date                     weekday      weekpart        steps     
+    ##  Min.   :2012-10-01 00:00:00   Mon:576   Weekday:1728   Min.   : NA   
+    ##  1st Qu.:2012-10-26 00:00:00   Tue:  0   Weekend: 576   1st Qu.: NA   
+    ##  Median :2012-11-06 11:30:00   Wed:288                  Median : NA   
+    ##  Mean   :2012-11-01 21:30:00   Thu:288                  Mean   :NaN   
+    ##  3rd Qu.:2012-11-11 00:00:00   Fri:576                  3rd Qu.: NA   
+    ##  Max.   :2012-11-30 00:00:00   Sat:288                  Max.   : NA   
+    ##                                Sun:288                  NA's   :2304  
+    ##     interval     
+    ##  Min.   :   0.0  
+    ##  1st Qu.: 588.8  
+    ##  Median :1177.5  
+    ##  Mean   :1177.5  
+    ##  3rd Qu.:1766.2  
+    ##  Max.   :2355.0  
+    ## 
+    ```
+    
+    ```r
     unique(activity$weekday[(missing.indexes)])
+    ```
+    
+    ```
+    ## [1] Mon Thu Sun Fri Sat Wed
+    ## Levels: Mon Tue Wed Thu Fri Sat Sun
+    ```
+    
+    ```r
     unique(activity$date[(missing.indexes)])
+    ```
+    
+    ```
+    ## [1] "2012-10-01 EDT" "2012-10-08 EDT" "2012-11-01 EDT" "2012-11-04 EDT"
+    ## [5] "2012-11-09 EST" "2012-11-10 EST" "2012-11-14 EST" "2012-11-30 EST"
+    ```
+    
+    ```r
     weekdays(unique(activity$date[(missing.indexes)]), abbreviate = TRUE)
+    ```
+    
+    ```
+    ## [1] "Mon" "Mon" "Thu" "Sun" "Fri" "Sat" "Wed" "Fri"
     ```
     __So, these summaries tell us that we're missing the following:__
     * __Eight (8) complete days (no metrics whatsoever)__
@@ -168,7 +289,8 @@ Note that there are a number of days/intervals where there are missing values (c
 
 
     __Ok, I'm going with substituting average steps by weekday by interval to keep the formula fairly straight-forward.__
-    ```{r, echo = TRUE}
+    
+    ```r
     # Take activity, group by weekday and interval and then average the steps
     average.steps.per.weekday.per.interval <- activity %>% 
         group_by(weekday, interval) %>% 
@@ -180,13 +302,26 @@ Note that there are a number of days/intervals where there are missing values (c
         as.integer(average.steps.per.weekday.per.interval$steps)
     ```
     __Let's take a look to see if the summary of activity.day passes a litmus test.__
-    ```{r, echo = TRUE}
+    
+    ```r
     summary(average.steps.per.weekday.per.interval)
+    ```
+    
+    ```
+    ##  weekday      interval          steps       
+    ##  Mon:288   Min.   :   0.0   Min.   :  0.00  
+    ##  Tue:288   1st Qu.: 588.8   1st Qu.:  0.00  
+    ##  Wed:288   Median :1177.5   Median : 12.00  
+    ##  Thu:288   Mean   :1177.5   Mean   : 37.44  
+    ##  Fri:288   3rd Qu.:1766.2   3rd Qu.: 55.00  
+    ##  Sat:288   Max.   :2355.0   Max.   :328.00  
+    ##  Sun:288
     ```
     __So, we now have an "averaged" dataset for each day so that we can substitute this data for the missing data.__
 
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
-    ```{r, echo = TRUE}
+    
+    ```r
     # Let's merge the two data frames.  activity will be the "x" and
     # average.steps.per.weekday.per.interval will be the "y"
     activity.imputed <- merge(activity, average.steps.per.weekday.per.interval, 
@@ -207,12 +342,67 @@ Note that there are a number of days/intervals where there are missing values (c
     
     # Let's take a look 
     summary(activity)
+    ```
+    
+    ```
+    ##       date                     weekday       weekpart         steps       
+    ##  Min.   :2012-10-01 00:00:00   Mon:2592   Weekday:12960   Min.   :  0.00  
+    ##  1st Qu.:2012-10-16 00:00:00   Tue:2592   Weekend: 4608   1st Qu.:  0.00  
+    ##  Median :2012-10-31 00:00:00   Wed:2592                   Median :  0.00  
+    ##  Mean   :2012-10-31 00:25:34   Thu:2592                   Mean   : 37.38  
+    ##  3rd Qu.:2012-11-15 00:00:00   Fri:2592                   3rd Qu.: 12.00  
+    ##  Max.   :2012-11-30 00:00:00   Sat:2304                   Max.   :806.00  
+    ##                                Sun:2304                   NA's   :2304    
+    ##     interval     
+    ##  Min.   :   0.0  
+    ##  1st Qu.: 588.8  
+    ##  Median :1177.5  
+    ##  Mean   :1177.5  
+    ##  3rd Qu.:1766.2  
+    ##  Max.   :2355.0  
+    ## 
+    ```
+    
+    ```r
     summary(activity.imputed)
+    ```
+    
+    ```
+    ##       date                     weekday       weekpart         steps       
+    ##  Min.   :2012-10-01 00:00:00   Mon:2592   Weekday:12960   Min.   :  0.00  
+    ##  1st Qu.:2012-10-16 00:00:00   Tue:2592   Weekend: 4608   1st Qu.:  0.00  
+    ##  Median :2012-10-31 00:00:00   Wed:2592                   Median :  0.00  
+    ##  Mean   :2012-10-31 00:25:34   Thu:2592                   Mean   : 37.53  
+    ##  3rd Qu.:2012-11-15 00:00:00   Fri:2592                   3rd Qu.: 19.00  
+    ##  Max.   :2012-11-30 00:00:00   Sat:2304                   Max.   :806.00  
+    ##                                Sun:2304                                   
+    ##     interval     
+    ##  Min.   :   0.0  
+    ##  1st Qu.: 588.8  
+    ##  Median :1177.5  
+    ##  Mean   :1177.5  
+    ##  3rd Qu.:1766.2  
+    ##  Max.   :2355.0  
+    ## 
+    ```
+    
+    ```r
     head(activity.imputed)
+    ```
+    
+    ```
+    ##         date weekday weekpart steps interval
+    ## 1 2012-10-19     Fri  Weekday     0        0
+    ## 2 2012-10-05     Fri  Weekday     0        0
+    ## 3 2012-11-30     Fri  Weekday     0        0
+    ## 4 2012-10-12     Fri  Weekday     0        0
+    ## 5 2012-11-16     Fri  Weekday     0        0
+    ## 6 2012-10-26     Fri  Weekday     0        0
     ```
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
-    ```{r steps_per_day_hist, echo = TRUE}
+    
+    ```r
     imputed.average.steps.per.day <- aggregate(activity.imputed$steps ~ activity.imputed$date, 
                                        FUN = sum, na.rm = TRUE)
     
@@ -223,20 +413,34 @@ Note that there are a number of days/intervals where there are missing values (c
          col = "lightblue", 
          xlab = "Number of Steps", 
          main = "Histogram of Total Steps Per Day (Imputed)")
-
+    ```
+    
+    ![](PA1_template_files/figure-html/steps_per_day_hist-1.png) 
+    
+    ```r
     imputed.average.steps.per.day.mean <- round(mean(imputed.average.steps.per.day$steps), 0)
     imputed.average.steps.per.day.median <- round(median(imputed.average.steps.per.day$steps), 0)
     
     imputed.average.steps.per.day.mean
     ```
-    __So, the mean for the imputed data is `r imputed.average.steps.per.day.mean` versus the original mean of `r average.steps.per.day.mean`.__
-    ```{r, echo = TRUE}
+    
+    ```
+    ## [1] 10810
+    ```
+    __So, the mean for the imputed data is 10810 versus the original mean of 10766.__
+    
+    ```r
     imputed.average.steps.per.day.median
     ```
-    __So, the median for the imputed data is `r imputed.average.steps.per.day.median` versus the orignal median of `r average.steps.per.day.median`.__
+    
+    ```
+    ## [1] 11015
+    ```
+    __So, the median for the imputed data is 11015 versus the orignal median of 10765.__
         
     __Let's now compare the activity data with the imputed activity data.__
-    ```{r, echo = TRUE}
+    
+    ```r
     activity.steps.per.weekday <- activity %>% 
         group_by(date, weekday) %>% 
         summarize(total.steps = sum(steps)) %>% 
@@ -250,7 +454,36 @@ Note that there are a number of days/intervals where there are missing values (c
         summarize(average.steps = round(mean(total.steps, na.rm = TRUE), 0))
     
     activity.steps.per.weekday
+    ```
+    
+    ```
+    ## Source: local data frame [7 x 2]
+    ## 
+    ##   weekday average.steps
+    ## 1     Mon          9975
+    ## 2     Tue          8950
+    ## 3     Wed         11791
+    ## 4     Thu          8213
+    ## 5     Fri         12360
+    ## 6     Sat         12535
+    ## 7     Sun         12278
+    ```
+    
+    ```r
     activity.imputed.steps.per.weekday
+    ```
+    
+    ```
+    ## Source: local data frame [7 x 2]
+    ## 
+    ##   weekday average.steps
+    ## 1     Mon          9956
+    ## 2     Tue          8950
+    ## 3     Wed         11782
+    ## 4     Thu          8203
+    ## 5     Fri         12341
+    ## 6     Sat         12524
+    ## 7     Sun         12266
     ```
     __Importantly, we notice that Tuesday's average steps has not changed.  Remember, we were not missing data for Tuesday so that makes sense.__
 
@@ -263,7 +496,8 @@ For this part the ```weekdays()``` function may be of some help here. Use the da
     __Fortunately, I created the two-level factor, weekpart, when I created the data frames.__
     
 2. Make a panel plot containing a time series plot (i.e. ```type = "l"```) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
-    ```{r imputed_panel_plot, echo = TRUE}
+    
+    ```r
     activity.imputed.steps.per.weekpart <- activity.imputed %>% group_by(weekpart, interval) %>% summarize(average.steps = mean(steps))
     
     xyplot(average.steps ~ interval | weekpart, data = activity.imputed.steps.per.weekpart,
@@ -272,5 +506,7 @@ For this part the ```weekdays()``` function may be of some help here. Use the da
        ylab = "Average Number of Steps",
        main = "Avg. Steps Taken (in 5-Minute Intervals) Averaged By Week Part")
     ```
+    
+    ![](PA1_template_files/figure-html/imputed_panel_plot-1.png) 
     
     __As you can see by the comparison of Weekend versus Weekday, activity starts later and ends later on the weekends and appears more evenly distributed throughout the day during the weekends.  If I were to make an assumption that this data came from an individual that works Monday through Friday, this makes sense.  If you consider that someone working during the week will not typically be as active (in terms of steps taken) Monday through Friday because he/she will be in meetings or sitting at a desk.__
